@@ -1,0 +1,146 @@
+[
+  {
+    "chunk_id": 0,
+    "text": "[00:04] This is a 3.\n[00:06] It's sloppily written and rendered at an extremely low resolution of 28x28 pixels,\n[00:10] but your brain has no trouble recognizing it as a 3.\n[00:14] And I want you to take a moment to appreciate how\n[00:16] crazy it is that brains can do this so effortlessly.\n[00:19] I mean, this, this and this are also recognizable as 3s,\n[00:22] even though the specific values of each pixel is very different from one\n[00:27] image to the next.\n[00:28] The particular light-sensitive cells in your eye that are firing when you\n[00:32] see this 3 are very different from the ones firing when you see this 3.\n[00:37] But something in that crazy-smart visual cortex of yours resolves these as representing\n[00:42] the same idea, while at the same time recognizing other images as their own distinct\n[00:47] ideas.\n[00:49] But if I told you, hey, sit down and write for me a program that takes in a grid of\n[00:54] 28x28 pixels like this and outputs a single number between 0 and 10,\n[00:59] telling you what it thinks the digit is, well the task goes from comically trivial to",
+    "start": 4.22,
+    "end": 64.745
+  },
+  {
+    "chunk_id": 1,
+    "text": "[00:54] 28x28 pixels like this and outputs a single number between 0 and 10,\n[00:59] telling you what it thinks the digit is, well the task goes from comically trivial to\n[01:04] dauntingly difficult.\n[01:07] Unless you've been living under a rock, I think I hardly need to motivate the relevance\n[01:10] and importance of machine learning and neural networks to the present and to the future.\n[01:15] But what I want to do here is show you what a neural network actually is,\n[01:18] assuming no background, and to help visualize what it's doing,\n[01:22] not as a buzzword but as a piece of math.\n[01:25] My hope is that you come away feeling like the structure itself is motivated,\n[01:28] and to feel like you know what it means when you read,\n[01:31] or you hear about a neural network quote-unquote learning.\n[01:35] This video is just going to be devoted to the structure component of that,\n[01:38] and the following one is going to tackle learning.\n[01:40] What we're going to do is put together a neural\n[01:43] network that can learn to recognize handwritten digits.",
+    "start": 54.634,
+    "end": 106.04
+  },
+  {
+    "chunk_id": 2,
+    "text": "[01:38] and the following one is going to tackle learning.\n[01:40] What we're going to do is put together a neural\n[01:43] network that can learn to recognize handwritten digits.\n[01:49] This is a somewhat classic example for introducing the topic,\n[01:52] and I'm happy to stick with the status quo here,\n[01:54] because at the end of the two videos I want to point you to a couple good\n[01:57] resources where you can learn more, and where you can download the code that\n[02:00] does this and play with it on your own computer.\n[02:05] There are many many variants of neural networks,\n[02:07] and in recent years there's been sort of a boom in research towards these variants,\n[02:12] but in these two introductory videos you and I are just going to look at the simplest\n[02:16] plain vanilla form with no added frills.\n[02:19] This is kind of a necessary prerequisite for understanding any of the more powerful\n[02:23] modern variants, and trust me it still has plenty of complexity for us to wrap our minds\n[02:28] around.",
+    "start": 98.261,
+    "end": 148.712
+  },
+  {
+    "chunk_id": 3,
+    "text": "[02:19] This is kind of a necessary prerequisite for understanding any of the more powerful\n[02:23] modern variants, and trust me it still has plenty of complexity for us to wrap our minds\n[02:28] around.\n[02:29] But even in this simplest form it can learn to recognize handwritten digits,\n[02:33] which is a pretty cool thing for a computer to be able to do.\n[02:37] And at the same time you'll see how it does fall\n[02:39] short of a couple hopes that we might have for it.\n[02:43] As the name suggests neural networks are inspired by the brain, but let's break that down.\n[02:48] What are the neurons, and in what sense are they linked together?\n[02:52] Right now when I say neuron all I want you to think about is a thing that holds a number,\n[02:58] specifically a number between 0 and 1.\n[03:00] It's really not more than that.\n[03:03] For example the network starts with a bunch of neurons corresponding to\n[03:08] each of the 28x28 pixels of the input image, which is 784 neurons in total.\n[03:14] Each one of these holds a number that represents the grayscale value of the",
+    "start": 139.86,
+    "end": 199.414
+  },
+  {
+    "chunk_id": 4,
+    "text": "[03:08] each of the 28x28 pixels of the input image, which is 784 neurons in total.\n[03:14] Each one of these holds a number that represents the grayscale value of the\n[03:19] corresponding pixel, ranging from 0 for black pixels up to 1 for white pixels.\n[03:25] This number inside the neuron is called its activation,\n[03:28] and the image you might have in mind here is that each neuron is lit up when its\n[03:32] activation is a high number.\n[03:36] So all of these 784 neurons make up the first layer of our network.\n[03:46] Now jumping over to the last layer, this has 10 neurons,\n[03:49] each representing one of the digits.\n[03:52] The activation in these neurons, again some number that's between 0 and 1,\n[03:56] represents how much the system thinks that a given image corresponds with a given digit.\n[04:03] There's also a couple layers in between called the hidden layers,\n[04:06] which for the time being should just be a giant question mark for\n[04:09] how on earth this process of recognizing digits is going to be handled.",
+    "start": 188.822,
+    "end": 253.6
+  },
+  {
+    "chunk_id": 5,
+    "text": "[04:06] which for the time being should just be a giant question mark for\n[04:09] how on earth this process of recognizing digits is going to be handled.\n[04:14] In this network I chose two hidden layers, each one with 16 neurons,\n[04:17] and admittedly that's kind of an arbitrary choice.\n[04:21] To be honest I chose two layers based on how I want to motivate the structure in\n[04:24] just a moment, and 16, well that was just a nice number to fit on the screen.\n[04:28] In practice there is a lot of room for experiment with a specific structure here.\n[04:33] The way the network operates, activations in one\n[04:35] layer determine the activations of the next layer.\n[04:39] And of course the heart of the network as an information processing mechanism comes down\n[04:43] to exactly how those activations from one layer bring about activations in the next\n[04:48] layer.\n[04:49] It's meant to be loosely analogous to how in biological networks of neurons,\n[04:53] some groups of neurons firing cause certain others to fire.",
+    "start": 246.421,
+    "end": 297.18
+  },
+  {
+    "chunk_id": 6,
+    "text": "[04:48] layer.\n[04:49] It's meant to be loosely analogous to how in biological networks of neurons,\n[04:53] some groups of neurons firing cause certain others to fire.\n[04:58] Now the network I'm showing here has already been trained to recognize digits,\n[05:01] and let me show you what I mean by that.\n[05:03] It means if you feed in an image, lighting up all 784 neurons of the input layer\n[05:08] according to the brightness of each pixel in the image,\n[05:11] that pattern of activations causes some very specific pattern in the next layer\n[05:16] which causes some pattern in the one after it,\n[05:18] which finally gives some pattern in the output layer.\n[05:22] And the brightest neuron of that output layer is the network's choice,\n[05:26] so to speak, for what digit this image represents.\n[05:32] And before jumping into the math for how one layer influences the next,\n[05:36] or how training works, let's just talk about why it's even reasonable\n[05:40] to expect a layered structure like this to behave intelligently.\n[05:44] What are we expecting here?",
+    "start": 288.213,
+    "end": 345.22
+  },
+  {
+    "chunk_id": 7,
+    "text": "[05:36] or how training works, let's just talk about why it's even reasonable\n[05:40] to expect a layered structure like this to behave intelligently.\n[05:44] What are we expecting here?\n[05:45] What is the best hope for what those middle layers might be doing?\n[05:48] Well, when you or I recognize digits, we piece together various components.\n[05:54] A 9 has a loop up top and a line on the right.\n[05:57] An 8 also has a loop up top, but it's paired with another loop down low.\n[06:01] A 4 basically breaks down into three specific lines, and things like that.\n[06:07] Now in a perfect world, we might hope that each neuron in the second\n[06:11] to last layer corresponds with one of these subcomponents,\n[06:14] that anytime you feed in an image with, say, a loop up top,\n[06:18] like a 9 or an 8, there's some specific neuron whose activation is\n[06:22] going to be close to 1.\n[06:24] And I don't mean this specific loop of pixels,\n[06:26] the hope would be that any generally loopy pattern towards the top sets off this neuron.",
+    "start": 336.337,
+    "end": 391.56
+  },
+  {
+    "chunk_id": 8,
+    "text": "[06:22] going to be close to 1.\n[06:24] And I don't mean this specific loop of pixels,\n[06:26] the hope would be that any generally loopy pattern towards the top sets off this neuron.\n[06:32] That way, going from the third layer to the last one just requires\n[06:36] learning which combination of subcomponents corresponds to which digits.\n[06:41] Of course, that just kicks the problem down the road,\n[06:43] because how would you recognize these subcomponents,\n[06:45] or even learn what the right subcomponents should be?\n[06:48] And I still haven't even talked about how one layer influences the next,\n[06:51] but run with me on this one for a moment.\n[06:53] Recognizing a loop can also break down into subproblems.\n[06:57] One reasonable way to do this would be to first\n[06:59] recognize the various little edges that make it up.\n[07:03] Similarly, a long line, like the kind you might see in the digits 1 or 4 or 7,\n[07:08] is really just a long edge, or maybe you think of it as a certain pattern of several\n[07:13] smaller edges.",
+    "start": 382.383,
+    "end": 434.32
+  },
+  {
+    "chunk_id": 9,
+    "text": "[07:03] Similarly, a long line, like the kind you might see in the digits 1 or 4 or 7,\n[07:08] is really just a long edge, or maybe you think of it as a certain pattern of several\n[07:13] smaller edges.\n[07:15] So maybe our hope is that each neuron in the second layer of\n[07:18] the network corresponds with the various relevant little edges.\n[07:23] Maybe when an image like this one comes in, it lights up all of the\n[07:27] neurons associated with around 8 to 10 specific little edges,\n[07:31] which in turn lights up the neurons associated with the upper loop\n[07:35] and a long vertical line, and those light up the neuron associated with a 9.\n[07:40] Whether or not this is what our final network actually does is another question,\n[07:44] one that I'll come back to once we see how to train the network,\n[07:47] but this is a hope that we might have, a sort of goal with the layered structure\n[07:51] like this.\n[07:53] Moreover, you can imagine how being able to detect edges and patterns\n[07:56] like this would be really useful for other image recognition tasks.",
+    "start": 423.78,
+    "end": 480.29999999999995
+  },
+  {
+    "chunk_id": 10,
+    "text": "[07:51] like this.\n[07:53] Moreover, you can imagine how being able to detect edges and patterns\n[07:56] like this would be really useful for other image recognition tasks.\n[08:00] And even beyond image recognition, there are all sorts of intelligent\n[08:04] things you might want to do that break down into layers of abstraction.\n[08:08] Parsing speech, for example, involves taking raw audio and picking out distinct sounds,\n[08:12] which combine to make certain syllables, which combine to form words,\n[08:16] which combine to make up phrases and more abstract thoughts, etc.\n[08:21] But getting back to how any of this actually works,\n[08:23] picture yourself right now designing how exactly the activations in one layer might\n[08:27] determine the activations in the next.\n[08:30] The goal is to have some mechanism that could conceivably combine pixels into edges,\n[08:35] or edges into patterns, or patterns into digits.\n[08:39] And to zoom in on one very specific example, let's say the hope\n[08:43] is for one particular neuron in the second layer to pick up",
+    "start": 471.99,
+    "end": 526.914
+  },
+  {
+    "chunk_id": 11,
+    "text": "[08:35] or edges into patterns, or patterns into digits.\n[08:39] And to zoom in on one very specific example, let's say the hope\n[08:43] is for one particular neuron in the second layer to pick up\n[08:46] on whether or not the image has an edge in this region here.\n[08:51] The question at hand is what parameters should the network have?\n[08:55] What dials and knobs should you be able to tweak so that it's expressive\n[08:59] enough to potentially capture this pattern, or any other pixel pattern,\n[09:03] or the pattern that several edges can make a loop, and other such things?\n[09:08] Well, what we'll do is assign a weight to each one of the\n[09:11] connections between our neuron and the neurons from the first layer.\n[09:16] These weights are just numbers.\n[09:18] Then take all of those activations from the first layer\n[09:21] and compute their weighted sum according to these weights.\n[09:27] I find it helpful to think of these weights as being organized into a\n[09:31] little grid of their own, and I'm going to use green pixels to indicate",
+    "start": 515.988,
+    "end": 574.6419999999999
+  },
+  {
+    "chunk_id": 12,
+    "text": "[09:27] I find it helpful to think of these weights as being organized into a\n[09:31] little grid of their own, and I'm going to use green pixels to indicate\n[09:34] positive weights, and red pixels to indicate negative weights,\n[09:37] where the brightness of that pixel is some loose depiction of the weight's value.\n[09:42] Now if we made the weights associated with almost all of the pixels zero\n[09:46] except for some positive weights in this region that we care about,\n[09:50] then taking the weighted sum of all the pixel values really just amounts\n[09:53] to adding up the values of the pixel just in the region that we care about.\n[09:59] And if you really wanted to pick up on whether there's an edge here,\n[10:02] what you might do is have some negative weights associated with the surrounding pixels.\n[10:07] Then the sum is largest when those middle pixels\n[10:10] are bright but the surrounding pixels are darker.\n[10:14] When you compute a weighted sum like this, you might come out with any number,",
+    "start": 567.7,
+    "end": 618.6469999999999
+  },
+  {
+    "chunk_id": 13,
+    "text": "[10:07] Then the sum is largest when those middle pixels\n[10:10] are bright but the surrounding pixels are darker.\n[10:14] When you compute a weighted sum like this, you might come out with any number,\n[10:18] but for this network what we want is for activations to be some value between 0 and 1.\n[10:24] So a common thing to do is to pump this weighted sum into some function\n[10:28] that squishes the real number line into the range between 0 and 1.\n[10:32] And a common function that does this is called the sigmoid function,\n[10:35] also known as a logistic curve.\n[10:38] Basically very negative inputs end up close to 0, positive inputs end up close to 1,\n[10:43] and it just steadily increases around the input 0.\n[10:49] So the activation of the neuron here is basically a\n[10:52] measure of how positive the relevant weighted sum is.\n[10:57] But maybe it's not that you want the neuron to\n[10:59] light up when the weighted sum is bigger than 0.\n[11:02] Maybe you only want it to be active when the sum is bigger than say 10.\n[11:06] That is, you want some bias for it to be inactive.",
+    "start": 607.48,
+    "end": 670.26
+  },
+  {
+    "chunk_id": 14,
+    "text": "[10:59] light up when the weighted sum is bigger than 0.\n[11:02] Maybe you only want it to be active when the sum is bigger than say 10.\n[11:06] That is, you want some bias for it to be inactive.\n[11:11] What we'll do then is just add in some other number like negative 10 to this\n[11:15] weighted sum before plugging it through the sigmoid squishification function.\n[11:20] That additional number is called the bias.\n[11:23] So the weights tell you what pixel pattern this neuron in the second\n[11:27] layer is picking up on, and the bias tells you how high the weighted\n[11:31] sum needs to be before the neuron starts getting meaningfully active.\n[11:36] And that is just one neuron.\n[11:38] Every other neuron in this layer is going to be connected to\n[11:42] all 784 pixel neurons from the first layer, and each one of\n[11:46] those 784 connections has its own weight associated with it.\n[11:51] Also, each one has some bias, some other number that you add\n[11:54] on to the weighted sum before squishing it with the sigmoid.\n[11:58] And that's a lot to think about!",
+    "start": 659.641,
+    "end": 719.54
+  },
+  {
+    "chunk_id": 15,
+    "text": "[11:51] Also, each one has some bias, some other number that you add\n[11:54] on to the weighted sum before squishing it with the sigmoid.\n[11:58] And that's a lot to think about!\n[11:59] With this hidden layer of 16 neurons, that's a total of 784 times 16 weights,\n[12:06] along with 16 biases.\n[12:08] And all of that is just the connections from the first layer to the second.\n[12:12] The connections between the other layers also have\n[12:14] a bunch of weights and biases associated with them.\n[12:18] All said and done, this network has almost exactly 13,000 total weights and biases.\n[12:23] 13,000 knobs and dials that can be tweaked and turned\n[12:27] to make this network behave in different ways.\n[12:31] So when we talk about learning, what that's referring to is\n[12:34] getting the computer to find a valid setting for all of these\n[12:37] many many numbers so that it'll actually solve the problem at hand.\n[12:42] One thought experiment that is at once fun and kind of horrifying is to imagine sitting\n[12:47] down and setting all of these weights and biases by hand,",
+    "start": 711.6,
+    "end": 770.23
+  },
+  {
+    "chunk_id": 16,
+    "text": "[12:42] One thought experiment that is at once fun and kind of horrifying is to imagine sitting\n[12:47] down and setting all of these weights and biases by hand,\n[12:50] purposefully tweaking the numbers so that the second layer picks up on edges,\n[12:54] the third layer picks up on patterns, etc.\n[12:56] I personally find this satisfying rather than just treating the network as a total black\n[13:01] box, because when the network doesn't perform the way you anticipate,\n[13:04] if you've built up a little bit of a relationship with what those weights and biases\n[13:09] actually mean, you have a starting place for experimenting with how to change the\n[13:13] structure to improve.\n[13:14] Or when the network does work but not for the reasons you might expect,\n[13:18] digging into what the weights and biases are doing is a good way to challenge\n[13:22] your assumptions and really expose the full space of possible solutions.\n[13:26] By the way, the actual function here is a little cumbersome to write down,\n[13:29] don't you think?",
+    "start": 762.62,
+    "end": 810.68
+  },
+  {
+    "chunk_id": 17,
+    "text": "[13:22] your assumptions and really expose the full space of possible solutions.\n[13:26] By the way, the actual function here is a little cumbersome to write down,\n[13:29] don't you think?\n[13:32] So let me show you a more notationally compact way that these connections are represented.\n[13:37] This is how you'd see it if you choose to read up more about neural networks.\n[13:40] Organize all of the activations from one layer into a column as a vector.\n[13:48] Then organize all of the weights as a matrix, where each row of that matrix corresponds\n[13:50] to the connections between one layer and a particular neuron in the next layer.\n[13:58] What that means is that taking the weighted sum of the activations in\n[14:02] the first layer according to these weights corresponds to one of the\n[14:05] terms in the matrix vector product of everything we have on the left here.\n[14:14] By the way, so much of machine learning just comes down to having a good\n[14:17] grasp of linear algebra, so for any of you who want a nice visual",
+    "start": 802.249,
+    "end": 861.119
+  },
+  {
+    "chunk_id": 18,
+    "text": "[14:14] By the way, so much of machine learning just comes down to having a good\n[14:17] grasp of linear algebra, so for any of you who want a nice visual\n[14:21] understanding for matrices and what matrix vector multiplication means,\n[14:24] take a look at the series I did on linear algebra, especially chapter 3.\n[14:29] Back to our expression, instead of talking about adding the bias to each one of\n[14:33] these values independently, we represent it by organizing all those biases into\n[14:38] a vector, and adding the entire vector to the previous matrix vector product.\n[14:43] Then as a final step, I'll wrap a sigmoid around the outside here,\n[14:46] and what that's supposed to represent is that you're going to apply the\n[14:50] sigmoid function to each specific component of the resulting vector inside.\n[14:55] So once you write down this weight matrix and these vectors as their own symbols,\n[15:00] you can communicate the full transition of activations from one layer to the next in an\n[15:05] extremely tight and neat little expression, and this makes the relevant code both a lot",
+    "start": 854.0,
+    "end": 910.338
+  },
+  {
+    "chunk_id": 19,
+    "text": "[15:00] you can communicate the full transition of activations from one layer to the next in an\n[15:05] extremely tight and neat little expression, and this makes the relevant code both a lot\n[15:10] simpler and a lot faster, since many libraries optimize the heck out of matrix\n[15:14] multiplication.\n[15:17] Remember how earlier I said these neurons are simply things that hold numbers?\n[15:22] Well of course the specific numbers that they hold depends on the image you feed in,\n[15:27] so it's actually more accurate to think of each neuron as a function,\n[15:31] one that takes in the outputs of all the neurons in the previous layer and spits out a\n[15:36] number between 0 and 1.\n[15:39] Really the entire network is just a function, one that takes in\n[15:43] 784 numbers as an input and spits out 10 numbers as an output.\n[15:47] It's an absurdly complicated function, one that involves 13,000 parameters\n[15:51] in the forms of these weights and biases that pick up on certain patterns,\n[15:55] and which involves iterating many matrix vector products and the sigmoid",
+    "start": 900.478,
+    "end": 959.2650000000001
+  },
+  {
+    "chunk_id": 20,
+    "text": "[15:51] in the forms of these weights and biases that pick up on certain patterns,\n[15:55] and which involves iterating many matrix vector products and the sigmoid\n[15:59] squishification function, but it's just a function nonetheless.\n[16:03] And in a way it's kind of reassuring that it looks complicated.\n[16:07] I mean if it were any simpler, what hope would we have\n[16:09] that it could take on the challenge of recognizing digits?\n[16:13] And how does it take on that challenge?\n[16:15] How does this network learn the appropriate weights and biases just by looking at data?\n[16:20] Well that's what I'll show in the next video, and I'll also dig a little\n[16:23] more into what this particular network we're seeing is really doing.\n[16:27] Now is the point I suppose I should say subscribe to stay notified\n[16:30] about when that video or any new videos come out,\n[16:33] but realistically most of you don't actually receive notifications from YouTube, do you?\n[16:38] Maybe more honestly I should say subscribe so that the neural networks",
+    "start": 951.462,
+    "end": 1001.276
+  },
+  {
+    "chunk_id": 21,
+    "text": "[16:33] but realistically most of you don't actually receive notifications from YouTube, do you?\n[16:38] Maybe more honestly I should say subscribe so that the neural networks\n[16:41] that underlie YouTube's recommendation algorithm are primed to believe\n[16:44] that you want to see content from this channel get recommended to you.\n[16:48] Anyway, stay posted for more.\n[16:50] Thank you very much to everyone supporting these videos on Patreon.\n[16:54] I've been a little slow to progress in the probability series this summer,\n[16:57] but I'm jumping back into it after this project,\n[16:59] so patrons you can look out for updates there.\n[17:03] To close things off here I have with me Lisha Li who did her PhD work on the\n[17:07] theoretical side of deep learning and who currently works at a venture capital\n[17:10] firm called Amplify Partners who kindly provided some of the funding for this video.\n[17:15] So Lisha one thing I think we should quickly bring up is this sigmoid function.\n[17:19] As I understand it early networks use this to squish the relevant weighted",
+    "start": 993.148,
+    "end": 1043.1580000000001
+  },
+  {
+    "chunk_id": 22,
+    "text": "[17:15] So Lisha one thing I think we should quickly bring up is this sigmoid function.\n[17:19] As I understand it early networks use this to squish the relevant weighted\n[17:23] sum into that interval between zero and one, you know kind of motivated\n[17:26] by this biological analogy of neurons either being inactive or active.\n[17:30] Exactly.\nBut relatively few modern networks actually use sigmoid anymore.\n[17:34] Yeah.\nIt's kind of old school right?\n[17:35] Yeah or rather ReLU seems to be much easier to train.\n[17:39] And ReLU, ReLU stands for rectified linear unit?\n[17:42] Yes it's this kind of function where you're just taking a max of zero\n[17:47] and a where a is given by what you were explaining in the video and\n[17:52] what this was sort of motivated from I think was a partially by a\n[17:56] biological analogy with how neurons would either be activated or not.\n[18:01] And so if it passes a certain threshold it would be the identity function but if it did\n[18:06] not then it would just not be activated so it'd be zero so it's kind of a simplification.",
+    "start": 1035.46,
+    "end": 1090.84
+  },
+  {
+    "chunk_id": 23,
+    "text": "[18:01] And so if it passes a certain threshold it would be the identity function but if it did\n[18:06] not then it would just not be activated so it'd be zero so it's kind of a simplification.\n[18:11] Using sigmoids didn't help training or it was very difficult to\n[18:15] train at some point and people just tried ReLU and it happened\n[18:20] to work very well for these incredibly deep neural networks.\n[18:25] All right thank you Lisha.",
+    "start": 1081.36,
+    "end": 1105.6399999999999
+  }
+]

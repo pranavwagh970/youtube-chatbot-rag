@@ -65,3 +65,9 @@ The app saves each indexed video under `backend/storage/indexes/<video_id>`. The
 
 For a deployed demo, load at least one video once after deployment so it appears in the stored-video picker. If the backend uses ephemeral storage, add a persistent disk/volume for `INDEX_DIR`.
 
+This repo includes one pre-indexed demo video so the deployed app can work even when YouTube blocks transcript requests from cloud hosts:
+
+```text
+aircAruvnKk - But what is a neural network? | Deep learning chapter 1
+```
+
