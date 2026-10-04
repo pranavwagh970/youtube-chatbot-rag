@@ -38,10 +38,20 @@ allowed_origins = {
 app.add_middleware(
     CORSMiddleware,
     allow_origins=list(allowed_origins),
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/")
+def root() -> dict[str, str]:
+    return {
+        "status": "ok",
+        "service": "YouTube RAG Chat API",
+        "docs": "/docs",
+    }
 
 
 @app.get("/health", response_model=HealthResponse)
