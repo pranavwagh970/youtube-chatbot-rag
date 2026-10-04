@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     chunk_size: int = 1100
     chunk_overlap: int = 220
     embedding_model: str = "all-MiniLM-L6-v2"
+    retrieval_mode: str = "keyword"
 
     model_config = SettingsConfigDict(
         env_file=".env",

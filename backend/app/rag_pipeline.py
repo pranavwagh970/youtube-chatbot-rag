@@ -1,4 +1,7 @@
 import bisect
+import math
+import re
+from collections import Counter
 from dataclasses import dataclass
 from typing import Any
 
@@ -7,6 +10,42 @@ from app.rag_types import RAGChunk
 from app.storage import IndexStorage
 from app.time_utils import format_timestamp
 from app.youtube_loader import TranscriptSegment
+
+
+TOKEN_RE = re.compile(r"[a-zA-Z0-9]+")
+STOP_WORDS = {
+    "a",
+    "an",
+    "and",
+    "are",
+    "as",
+    "at",
+    "be",
+    "but",
+    "by",
+    "for",
+    "from",
+    "how",
+    "i",
+    "in",
+    "is",
+    "it",
+    "of",
+    "on",
+    "or",
+    "that",
+    "the",
+    "this",
+    "to",
+    "what",
+    "when",
+    "where",
+    "which",
+    "who",
+    "why",
+    "with",
+    "you",
+}
 
 
 @dataclass
@@ -69,6 +108,9 @@ class RAGPipeline:
         return video_index
 
     def retrieve(self, video_id: str, question: str, top_k: int) -> list[RetrievedChunk]:
+        if self.settings.retrieval_mode == "keyword":
+            return self._retrieve_keyword(video_id, question, top_k)
+
         video_index = self.get_index(video_id)
         query_vector = self._embed([question])
         scores, indices = video_index.index.search(query_vector, top_k)
@@ -79,6 +121,56 @@ class RAGPipeline:
                 continue
             retrieved.append(RetrievedChunk(chunk=video_index.chunks[int(idx)], score=float(score)))
         return retrieved
+
+    def _retrieve_keyword(self, video_id: str, question: str, top_k: int) -> list[RetrievedChunk]:
+        chunks = self._get_chunks(video_id)
+        query_terms = self._tokenize(question)
+
+        if not query_terms:
+            return [RetrievedChunk(chunk=chunk, score=0.0) for chunk in chunks[:top_k]]
+
+        query_counts = Counter(query_terms)
+        scored: list[RetrievedChunk] = []
+
+        for chunk in chunks:
+            chunk_terms = self._tokenize(chunk.text)
+            if not chunk_terms:
+                continue
+
+            chunk_counts = Counter(chunk_terms)
+            overlap_score = sum(
+                min(query_count, chunk_counts.get(term, 0))
+                for term, query_count in query_counts.items()
+            )
+            if overlap_score == 0:
+                continue
+
+            # Normalize lightly so giant chunks do not win only by being longer.
+            score = overlap_score / math.sqrt(len(chunk_terms))
+            scored.append(RetrievedChunk(chunk=chunk, score=score))
+
+        if not scored:
+            return [RetrievedChunk(chunk=chunk, score=0.0) for chunk in chunks[:top_k]]
+
+        scored.sort(key=lambda item: item.score, reverse=True)
+        return scored[:top_k]
+
+    def _get_chunks(self, video_id: str) -> list[RAGChunk]:
+        if video_id in self._loaded_indexes:
+            return self._loaded_indexes[video_id].chunks
+        if not self.storage.exists(video_id):
+            raise FileNotFoundError("Load this video before asking questions.")
+        chunks = self.storage.load_chunks(video_id)
+        self._loaded_indexes[video_id] = VideoIndex(index=None, chunks=chunks)
+        return chunks
+
+    @staticmethod
+    def _tokenize(text: str) -> list[str]:
+        return [
+            token
+            for token in (match.group(0).lower() for match in TOKEN_RE.finditer(text))
+            if token not in STOP_WORDS and len(token) > 1
+        ]
 
     def _embed(self, texts: list[str]) -> Any:
         import numpy as np

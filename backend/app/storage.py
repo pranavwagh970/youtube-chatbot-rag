@@ -89,6 +89,10 @@ class IndexStorage:
 
         directory = self.video_dir(video_id)
         index = faiss.read_index(str(directory / "index.faiss"))
-        payload = json.loads((directory / "chunks.json").read_text(encoding="utf-8"))
-        chunks = [RAGChunk(**item) for item in payload]
+        chunks = self.load_chunks(video_id)
         return index, chunks
+
+    def load_chunks(self, video_id: str) -> list[RAGChunk]:
+        directory = self.video_dir(video_id)
+        payload = json.loads((directory / "chunks.json").read_text(encoding="utf-8"))
+        return [RAGChunk(**item) for item in payload]
